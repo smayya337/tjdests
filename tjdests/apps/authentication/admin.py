@@ -15,6 +15,7 @@ class UserAdmin(admin.ModelAdmin):
                 "fields": (
                     "username",
                     "first_name",
+                    "middle_name",
                     "last_name",
                     "nickname",
                     "email",
