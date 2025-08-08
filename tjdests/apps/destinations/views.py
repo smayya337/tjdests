@@ -71,7 +71,7 @@ class StudentDestinationListView(
             current_academic_year = get_current_academic_year()
             queryset = queryset.filter(graduation_year=current_academic_year)
         
-        queryset = queryset.order_by("last_name", "preferred_name")
+        queryset = queryset.order_by("last_name", "preferred_name").prefetch_related('testscore_set')
 
         college_id: Optional[str] = self.request.GET.get("college", None)
         if college_id is not None:
