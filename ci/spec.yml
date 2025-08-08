@@ -21,7 +21,7 @@ defaults:
 
   setup_pip_cache: &setup_pip_cache
     name: Set up pip cache
-    uses: actions/cache@v2
+    uses: actions/cache@v4
     with:
       path: ~/.cache/pip
       key: ${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt') }}
