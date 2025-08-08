@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "social_django",
     "django_extensions",
-    "bootstrap_pagination",
     "axes",
     "tjdests.apps.authentication",
     "tjdests.apps.destinations",
@@ -60,6 +59,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "tjdests.apps.authentication.middleware.PasswordResetRequiredMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "axes.middleware.AxesMiddleware",
@@ -121,6 +121,7 @@ AUTH_USER_MODEL = "authentication.User"
 AUTHENTICATION_BACKENDS = (
     "axes.backends.AxesStandaloneBackend",
     "tjdests.apps.authentication.oauth.IonOauth2",
+    "tjdests.apps.authentication.backends.AdditionalHashBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
@@ -175,7 +176,6 @@ if TESTING:
     AXES_ENABLED = False
 
 # Override the following in secret.py
-SENIOR_GRAD_YEAR: int = -1
 BRANDING_NAME: str = "UNDEFINED"
 GLOBAL_MESSAGE: Optional[str] = None
 LOGIN_LOCKED = False

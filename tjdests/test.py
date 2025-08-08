@@ -35,7 +35,6 @@ class TJDestsTestCase(TestCase):
                 "is_student": make_student,
                 "is_staff": make_superuser,
                 "is_superuser": make_superuser,
-                "is_senior": make_senior,
                 "is_banned": ban_user,
                 "accepted_terms": accept_tos,
                 "publish_data": publish_data,

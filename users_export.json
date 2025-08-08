@@ -1,0 +1,71 @@
+{
+  "1": {
+    "username": "admin",
+    "password": "pbkdf2_sha256$1000000$Y38i9xxX6KTRd6dq3kf4jI$NtA2KsNVK7U9C5fNob7CIyQRANzXce/5YLPEBvICLZo=",
+    "first_name": "",
+    "last_name": "",
+    "email": "root@localhost",
+    "nickname": "",
+    "use_nickname": false,
+    "preferred_name": "",
+    "graduation_year": null,
+    "gpa": null,
+    "is_student": false,
+    "is_banned": false,
+    "accepted_terms": false,
+    "publish_data": false,
+    "biography": "",
+    "attending_college_hash": null,
+    "decisions": [],
+    "test_scores": [],
+    "is_staff": true,
+    "is_superuser": true,
+    "last_modified": "2025-08-08T00:43:16.970870+00:00"
+  },
+  "2": {
+    "username": "2022smayya",
+    "password": "pbkdf2_sha256$1000000$52iIsntk0FuPdLdohxSQUM$4XlGYcG9ysxekb267XzLRHbdR8kCpANml7O1MetIBeo=",
+    "first_name": "Shreyas",
+    "last_name": "Mayya",
+    "email": "2022smayya@tjhsst.edu",
+    "nickname": "",
+    "use_nickname": false,
+    "preferred_name": "Shreyas",
+    "graduation_year": 2022,
+    "gpa": 4.36,
+    "is_student": true,
+    "is_banned": false,
+    "accepted_terms": true,
+    "publish_data": true,
+    "biography": "# What is up y'all\r\n\r\nIt's *your boy* here with some groovy code:\r\n\r\n```py\r\nprint(\"Hello world\")\r\n```",
+    "attending_college_hash": "1724933aa1351a5ee385ef0f2dcb96d9",
+    "decisions": [
+      {
+        "college_hash": "1724933aa1351a5ee385ef0f2dcb96d9",
+        "college_name": "UNIVERSITY OF VIRGINIA",
+        "college_location": "CHARLOTTESVILLE, VA",
+        "decision_type": "EA",
+        "admission_status": "ADMIT",
+        "last_modified": "2025-08-08T00:46:10.272795+00:00"
+      },
+      {
+        "college_hash": "cce484dd7be238cc523c1b109198aa8c",
+        "college_name": "YALE UNIVERSITY",
+        "college_location": "NEW HAVEN, CT",
+        "decision_type": "EA",
+        "admission_status": "DENY",
+        "last_modified": "2025-08-08T00:49:06.322780+00:00"
+      }
+    ],
+    "test_scores": [
+      {
+        "exam_type": "SAT_TOTAL",
+        "exam_score": 1550,
+        "last_modified": "2025-08-08T00:46:18.636588+00:00"
+      }
+    ],
+    "is_staff": false,
+    "is_superuser": false,
+    "last_modified": "2025-08-08T00:48:14.080109+00:00"
+  }
+}

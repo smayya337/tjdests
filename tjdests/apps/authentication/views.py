@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -65,6 +66,50 @@ def accept_tos_view(request: HttpRequest) -> HttpResponse:
     context = {"form": form}
 
     return render(request, "authentication/accept_tos.html", context=context)
+
+
+@login_required
+def force_password_reset_view(request: HttpRequest) -> HttpResponse:
+    """
+    Force password reset for users who logged in with additional hashes.
+    """
+    assert request.user.is_authenticated
+    
+    # Check if user actually needs password reset
+    if not request.session.get('needs_password_reset', False):
+        return redirect(reverse('authentication:index'))
+    
+    if request.method == 'POST':
+        form = SetPasswordForm(request.user, request.POST)
+        if form.is_valid():
+            # Set the new password
+            form.save()
+            
+            # Disable additional hashes
+            request.user.use_additional_hashes = False
+            request.user.save()
+            
+            # Clear the session flag
+            request.session.pop('needs_password_reset', None)
+            
+            # Re-authenticate user with new password
+            login(
+                request,
+                request.user,
+                backend='django.contrib.auth.backends.ModelBackend'
+            )
+            
+            messages.success(request, 'Password updated successfully. You can now use your new password to log in.')
+            return redirect(reverse('authentication:index'))
+    else:
+        form = SetPasswordForm(request.user)
+    
+    context = {
+        'form': form,
+        'user': request.user,
+    }
+    
+    return render(request, 'authentication/force_password_reset.html', context=context)
 
 
 def lockout(request, *args, **kwargs):
