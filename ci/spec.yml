@@ -31,6 +31,7 @@ defaults:
     run: |
       set -e
       pip install --upgrade pip
+      pip install Cython
       pip install -r requirements.txt
       pip install -r requirements-dev.txt
 jobs:
