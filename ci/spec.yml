@@ -26,6 +26,11 @@ defaults:
       path: ~/.cache/pip
       key: ${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt') }}
 
+  install_apt_deps: &install_apt_deps
+    name: Install APT dependencies
+    run: |
+       apt -y install libyaml2-dev
+
   setup_venv: &setup_venv
     name: Set up venv
     run: |
