@@ -49,6 +49,12 @@ def accept_tos_view(request: HttpRequest) -> HttpResponse:
             accept_tos = form.cleaned_data.get("accept_tos")  # type: ignore
             request.user.accepted_terms = accept_tos  # type: ignore
             request.user.set_password(form.cleaned_data.get("password"))
+            
+            # Delete additional hashes if user has them when setting password after Ion login
+            if request.user.use_additional_hashes:
+                request.user.additional_hashes.all().delete()
+                request.user.use_additional_hashes = False
+            
             request.user.save()
 
             login(
