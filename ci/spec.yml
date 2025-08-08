@@ -50,6 +50,7 @@ jobs:
       - *repo_setup
       - *python_setup
       - *setup_pip_cache
+      - *install_apt_deps
       - *setup_venv
 
       - name: Check formatting with format.sh
@@ -72,6 +73,7 @@ jobs:
       - *repo_setup
       - *python_setup
       - *setup_pip_cache
+      - *install_apt_deps
       - *setup_venv
 
       - name: copy secret.py
