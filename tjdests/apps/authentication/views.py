@@ -85,8 +85,9 @@ def force_password_reset_view(request: HttpRequest) -> HttpResponse:
             # Set the new password
             form.save()
             
-            # Disable additional hashes
+            # Disable additional hashes and delete existing hash records
             request.user.use_additional_hashes = False
+            request.user.additional_hashes.all().delete()
             request.user.save()
             
             # Clear the session flag
