@@ -74,43 +74,46 @@ def force_password_reset_view(request: HttpRequest) -> HttpResponse:
     Force password reset for users who logged in with additional hashes.
     """
     assert request.user.is_authenticated
-    
+
     # Check if user actually needs password reset
-    if not request.session.get('needs_password_reset', False):
-        return redirect(reverse('authentication:index'))
-    
-    if request.method == 'POST':
+    if not request.session.get("needs_password_reset", False):
+        return redirect(reverse("authentication:index"))
+
+    if request.method == "POST":
         form = SetPasswordForm(request.user, request.POST)
         if form.is_valid():
             # Set the new password
             form.save()
-            
+
             # Disable additional hashes and delete existing hash records
             request.user.use_additional_hashes = False
             request.user.additional_hashes.all().delete()
             request.user.save()
-            
+
             # Clear the session flag
-            request.session.pop('needs_password_reset', None)
-            
+            request.session.pop("needs_password_reset", None)
+
             # Re-authenticate user with new password
             login(
                 request,
                 request.user,
-                backend='django.contrib.auth.backends.ModelBackend'
+                backend="django.contrib.auth.backends.ModelBackend",
             )
-            
-            messages.success(request, 'Password updated successfully. You can now use your new password to log in.')
-            return redirect(reverse('authentication:index'))
+
+            messages.success(
+                request,
+                "Password updated successfully. You can now use your new password to log in.",
+            )
+            return redirect(reverse("authentication:index"))
     else:
         form = SetPasswordForm(request.user)
-    
+
     context = {
-        'form': form,
-        'user': request.user,
+        "form": form,
+        "user": request.user,
     }
-    
-    return render(request, 'authentication/force_password_reset.html', context=context)
+
+    return render(request, "authentication/force_password_reset.html", context=context)
 
 
 def lockout(request, *args, **kwargs):

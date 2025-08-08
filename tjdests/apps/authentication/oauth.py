@@ -1,7 +1,5 @@
 from social_core.backends.oauth import BaseOAuth2
 
-from django.conf import settings
-
 
 class IonOauth2(BaseOAuth2):  # pylint: disable=abstract-method
     name = "ion"

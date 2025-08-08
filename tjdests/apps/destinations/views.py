@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -25,14 +25,16 @@ def get_current_academic_year() -> int:
 def get_available_graduation_years() -> List[int]:
     """Get list of available graduation years from published user data."""
     current_year = get_current_academic_year()
-    
-    years = User.objects.filter(
-        publish_data=True,
-        graduation_year__isnull=False
-    ).values_list('graduation_year', flat=True).distinct().order_by('-graduation_year')
-    
+
+    years = (
+        User.objects.filter(publish_data=True, graduation_year__gt=0)
+        .values_list("graduation_year", flat=True)
+        .distinct()
+        .order_by("-graduation_year")
+    )
+
     years_list = list(years)
-    
+
     # Ensure current senior class is always included as first option
     if current_year not in years_list:
         years_list.insert(0, current_year)
@@ -40,7 +42,7 @@ def get_available_graduation_years() -> List[int]:
         # Move current year to first position if it's not already there
         years_list.remove(current_year)
         years_list.insert(0, current_year)
-    
+
     return years_list
 
 
@@ -63,15 +65,17 @@ class StudentDestinationListView(
         # Filter by graduation year
         graduation_year = self.request.GET.get("year", None)
         if graduation_year is not None:
-            if not graduation_year.isdigit():
+            if not graduation_year.isdigit() or int(graduation_year) == 0:
                 raise Http404()
             queryset = queryset.filter(graduation_year=int(graduation_year))
         else:
             # Default to current academic year
             current_academic_year = get_current_academic_year()
             queryset = queryset.filter(graduation_year=current_academic_year)
-        
-        queryset = queryset.order_by("last_name", "preferred_name").prefetch_related('testscore_set')
+
+        queryset = queryset.order_by("last_name", "preferred_name").prefetch_related(
+            "testscore_set"
+        )
 
         college_id: Optional[str] = self.request.GET.get("college", None)
         if college_id is not None:
@@ -113,7 +117,7 @@ class StudentDestinationListView(
             context["selected_year"] = int(graduation_year)
         else:
             context["selected_year"] = get_current_academic_year()
-        
+
         context["available_years"] = get_available_graduation_years()
         context["current_academic_year"] = get_current_academic_year()
 
@@ -144,7 +148,7 @@ class CollegeDestinationListView(
         # Get graduation year filter
         graduation_year = self.request.GET.get("year", None)
         if graduation_year is not None:
-            if not graduation_year.isdigit():
+            if not graduation_year.isdigit() or int(graduation_year) == 0:
                 raise Http404()
             year_filter = Q(decision__user__graduation_year=int(graduation_year))
         else:
@@ -155,7 +159,8 @@ class CollegeDestinationListView(
         queryset = (
             queryset.annotate(  # type: ignore  # mypy is annoying
                 count_decisions=Count(
-                    "decision", filter=Q(decision__user__publish_data=True) & year_filter
+                    "decision",
+                    filter=Q(decision__user__publish_data=True) & year_filter,
                 ),
                 count_attending=Count(
                     "decision",
@@ -164,84 +169,96 @@ class CollegeDestinationListView(
                             attending_college__isnull=False
                         ),
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_admit=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.ADMIT,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_waitlist=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.WAITLIST,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_waitlist_admit=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.WAITLIST_ADMIT,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_waitlist_deny=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.WAITLIST_DENY,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_defer=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DEFER,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_defer_admit=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DEFER_ADMIT,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_defer_deny=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DEFER_DENY,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_defer_wl=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DEFER_WL,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_defer_wl_admit=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DEFER_WL_A,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_defer_wl_deny=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DEFER_WL_D,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
                 count_deny=Count(
                     "decision",
                     filter=Q(
                         decision__admission_status=Decision.DENY,
                         decision__user__publish_data=True,
-                    ) & year_filter,
+                    )
+                    & year_filter,
                 ),
             )
             .filter(count_decisions__gte=1)
@@ -265,7 +282,7 @@ class CollegeDestinationListView(
             context["selected_year"] = int(graduation_year)
         else:
             context["selected_year"] = get_current_academic_year()
-        
+
         context["available_years"] = get_available_graduation_years()
         context["current_academic_year"] = get_current_academic_year()
 
