@@ -36,9 +36,10 @@ defaults:
     run: |
       set -e
       pip install --upgrade pip
-      pip install Cython
+      # https://github.com/yaml/pyyaml/issues/724
+      pip install "cython<3.0.0"
       pip install -r requirements.txt
-      pip install -r requirements-dev.txt
+      pip install --no-build-isolation -r requirements-dev.txt
 jobs:
   lint:
     runs-on: ubuntu-latest
