@@ -47,6 +47,19 @@
             }
             window.location.href = url.toString();
         }
+
+        document.getElementById('search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const url = new URL(window.location);
+                const searchValue = this.value.trim();
+                if (searchValue) {
+                    url.searchParams.set('q', searchValue);
+                } else {
+                    url.searchParams.delete('q');
+                }
+                window.location.href = url.toString();
+            }
+        });
     </script>
 
     <div class="row py-3">
